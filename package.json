@@ -1,0 +1,20 @@
+{
+  "name": "bamboo-tracker",
+  "version": "1.0.0",
+  "description": "Simple lambdas for automatically filling bamboo timesheet",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivanmartos/bamboo-tracker.git"
+  },
+  "keywords": ["go", "serverless", "lambda", "bamboo"],
+  "author": "Ivan Martos <martos.ivan@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivanmartos/bamboo-tracker/issues"
+  },
+  "homepage": "https://github.com/ivanmartos/bamboo-tracker#readme",
+  "devDependencies": {
+    "serverless": "^1.67.1",
+    "serverless-offline": "^6.1.4"
+  }
+}
