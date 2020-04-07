@@ -10,3 +10,6 @@ clean:
 
 deploy: clean build
 	serverless deploy --verbose
+
+offline: clean build
+	serverless offline --useDocker
