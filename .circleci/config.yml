@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.9
+
+    working_directory: /go/src/github.com/ivanmartos/bamboo-tracker
+    steps:
+      - checkout
+      - run: make test
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test:
+          filters:
+            branches:
+              ignore:
+                - master
