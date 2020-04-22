@@ -28,7 +28,7 @@ functions:
     events:
       - schedule: cron(0 17 ? * MON-FRI *)
     environment:
-      BAMBOO_HOST: TODO
+      BAMBOO_HOST: https://companyname.bamboohr.com
       BAMBOO_USERNAME: TODO
       BAMBOO_PASSWORD: TODO
       TIMESHEETS: |
