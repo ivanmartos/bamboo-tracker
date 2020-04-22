@@ -12,7 +12,7 @@ provider:
     PROJECT: ${self:service}-${self:provider.stage}
   deploymentBucket:
     name: ${self:service}-deployment-bucket-${self:provider.region}-${self:provider.stage}
-  stage: ${opt:stage}
+  stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
   logRetentionInDays: 7
 

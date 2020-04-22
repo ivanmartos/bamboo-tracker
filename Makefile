@@ -1,4 +1,8 @@
-.PHONY: build clean deploy test
+.PHONY: install build clean deploy test
+
+install:
+	go get ./...
+	npm install
 
 build:
 	export GO111MODULE=on
@@ -8,10 +12,10 @@ clean:
 	rm -rf ./bin ./vendor Gopkg.lock
 
 deploy: clean build
-	serverless deploy --verbose
+	serverless deploy --verbose -s $(STAGE)
 
 offline: clean build
-	serverless offline --useDocker
+	serverless offline --useDocker -s local
 
 test:
 	go test ./internal/**
