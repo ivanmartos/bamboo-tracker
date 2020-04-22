@@ -24,8 +24,9 @@ This is required one time only.
 
 ### How to deploy
 Before you deploy, you need to pass your own configuration to file [serverless.yml](serverless.yml)
+
 What needs to be modified:
-1. `BAMBOO_HOST` - environment variable
+1. `BAMBOO_HOST` - environment variable containing hostname of your company bambooHR
 2. `BAMBOO_USERNAME` - your username used for logging in to BambooHR
 3. `BAMBOO_PASSWORD` - your password used for logging in to BambooHR
 4. `TIMESHEETS` - yml formatted string that contains timesheet entries to be uploaded. **Important** - name of the weekdays must be lowercase
