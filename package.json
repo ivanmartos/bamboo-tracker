@@ -6,7 +6,12 @@
     "type": "git",
     "url": "git+https://github.com/ivanmartos/bamboo-tracker.git"
   },
-  "keywords": ["go", "serverless", "lambda", "bamboo"],
+  "keywords": [
+    "go",
+    "serverless",
+    "lambda",
+    "bamboo"
+  ],
   "author": "Ivan Martos <martos.ivan@gmail.com>",
   "license": "ISC",
   "bugs": {
@@ -15,6 +20,7 @@
   "homepage": "https://github.com/ivanmartos/bamboo-tracker#readme",
   "devDependencies": {
     "serverless": "^1.67.1",
+    "serverless-deployment-bucket": "^1.1.2",
     "serverless-offline": "^6.1.4"
   }
 }
