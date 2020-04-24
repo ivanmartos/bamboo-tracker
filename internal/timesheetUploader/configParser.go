@@ -8,10 +8,6 @@ import (
 	"time"
 )
 
-type TimesheetParser interface {
-	GetTimesheetEntries(weekday time.Weekday) []TimesheetEntry
-}
-
 type TimesheetParserImpl struct{}
 
 func InitTimesheetParser() TimesheetParser {
