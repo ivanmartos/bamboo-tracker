@@ -40,10 +40,12 @@ make deploy STAGE=YOUR_STAGE //STAGE is optional, be default it is "dev"
 ```
 
 ### How to run locally
-Execute command 
+To start as local serverless project execute
 ```
 make offline
 ```
+
+To just execute timesheetUploader functionality without serverless framework start program [locally](cmd/timesheetUploaderLocal)
 
 ### How to run tests
 Execute command 
