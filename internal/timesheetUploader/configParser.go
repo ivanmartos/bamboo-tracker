@@ -3,7 +3,6 @@ package timesheetUploader
 import (
 	"gopkg.in/yaml.v2"
 	"log"
-	"os"
 	"strings"
 	"time"
 )
@@ -36,7 +35,7 @@ func getValidatedConfigTime(configTime string) string {
 func (TimesheetParserImpl) GetTimesheetEntries(weekday time.Weekday) []TimesheetEntry {
 	var config = make(map[string][]configEntry)
 
-	timesheets := os.Getenv("TIMESHEETS")
+	timesheets := getEnvVariable("TIMESHEETS")
 
 	log.Println(timesheets)
 	err := yaml.Unmarshal([]byte(timesheets), &config)
