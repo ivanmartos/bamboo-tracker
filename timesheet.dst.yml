@@ -1,0 +1,23 @@
+monday:
+  - start: 7:00
+    end: 12:00
+  - start: 12:30
+    end: 14:00
+tuesday:
+  - start: 9:00
+    end: 12:00
+  - start: 12:30
+    end: 17:00
+wednesday:
+  - start: 9:30
+    end: 12:00
+  - start: 12:30
+    end: 17:30
+thursday:
+  - start: 9:00
+    end: 12:00
+  - start: 12:30
+    end: 17:00
+friday:
+  - start: 7:00
+    end: 12:00

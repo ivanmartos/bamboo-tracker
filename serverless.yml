@@ -4,6 +4,9 @@ plugins:
   - serverless-offline
   - serverless-deployment-bucket
 
+custom:
+  timesheetS3Key: timesheet.yml
+
 provider:
   name: aws
   runtime: go1.x
@@ -15,6 +18,15 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
   logRetentionInDays: 7
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 's3:GetObject'
+      Resource:
+        Fn::Join:
+          - '/'
+          - - !GetAtt ['TimesheetsBucket', Arn]
+            - ${self:custom.timesheetS3Key}
 
 package:
   exclude:
@@ -26,25 +38,18 @@ functions:
   uploadTimesheet:
     handler: bin/timesheetUploader
     events:
-      - schedule: cron(0 17 ? * MON-FRI *)
+      - schedule: cron(0 15 ? * MON-FRI *)
     environment:
-      BAMBOO_HOST: https://companyname.bamboohr.com
-      BAMBOO_USERNAME: TODO
-      BAMBOO_PASSWORD: TODO
-      TIMESHEETS: |
-        tuesday:
-          - start: 9:00
-            end: 12:00
-          - start: 12:30
-            end: 16:35
-        wednesday:
-          - start: 9:00
-            end: 12:00
-          - start: 12:30
-            end: 16:35
-        thursday:
-          - start: 9:00
-            end: 12:00
-          - start: 12:30
-            end: 16:35
+      BAMBOO_HOST: ${env:BAMBOO_HOST}
+      BAMBOO_USERNAME: ${env:BAMBOO_USERNAME}
+      BAMBOO_PASSWORD: ${env:BAMBOO_PASSWORD}
+      TIMESHEET_S3_KEY: ${self:custom.timesheetS3Key}
+      TIMESHEET_S3_BUCKET: !Ref 'TimesheetsBucket'
 
+resources:
+  Resources:
+    TimesheetsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service}-timesheets-${self:provider.stage}
+        AccessControl: Private

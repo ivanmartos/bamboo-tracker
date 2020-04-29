@@ -2,6 +2,7 @@ module github.com/ivanmartos/bamboo-tracker
 
 require (
 	github.com/aws/aws-lambda-go v1.6.0
+	github.com/aws/aws-sdk-go v1.30.14
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/fnproject/fdk-go v0.0.2
 	github.com/mattn/go-colorable v0.1.6 // indirect
