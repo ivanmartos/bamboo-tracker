@@ -48,3 +48,10 @@ functions:
           - start: 12:30
             end: 16:35
 
+resources:
+  Resources:
+    TimesheetsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service}-timesheets-${self:provider.stage}
+        AccessControl: Private
