@@ -1,6 +1,8 @@
 package timesheetUploader
 
-import "time"
+import (
+	"time"
+)
 
 type BambooApi interface {
 	LogIn(username string, password string) BambooSession
@@ -9,4 +11,8 @@ type BambooApi interface {
 
 type TimesheetParser interface {
 	GetTimesheetEntries(weekday time.Weekday) []TimesheetEntry
+}
+
+type S3Repository interface {
+	GetS3FileContent(key string, bucket string) string
 }
