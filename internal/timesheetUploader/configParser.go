@@ -7,10 +7,12 @@ import (
 	"time"
 )
 
-type TimesheetParserImpl struct{}
+type TimesheetParserImpl struct {
+	s3Repository S3Repository
+}
 
-func InitTimesheetParser() TimesheetParser {
-	return TimesheetParserImpl{}
+func InitTimesheetParser(s3Repository S3Repository) TimesheetParser {
+	return TimesheetParserImpl{s3Repository: s3Repository}
 }
 
 const (
@@ -32,10 +34,15 @@ func getValidatedConfigTime(configTime string) string {
 	return date.Format(timesheetEntryTimeLayout)
 }
 
-func (TimesheetParserImpl) GetTimesheetEntries(weekday time.Weekday) []TimesheetEntry {
+func (p TimesheetParserImpl) getTimesheetContent() string {
+	log.Println("Reading timesheets from s3")
+	return p.s3Repository.GetS3FileContent(getEnvVariable("TIMESHEET_S3_KEY"), getEnvVariable("TIMESHEET_S3_BUCKET"))
+}
+
+func (p TimesheetParserImpl) GetTimesheetEntries(weekday time.Weekday) []TimesheetEntry {
 	var config = make(map[string][]configEntry)
 
-	timesheets := getEnvVariable("TIMESHEETS")
+	timesheets := p.getTimesheetContent()
 
 	log.Println(timesheets)
 	err := yaml.Unmarshal([]byte(timesheets), &config)

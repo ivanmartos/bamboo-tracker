@@ -8,7 +8,7 @@ import (
 func main() {
 	timesheetService := timesheetUploader.InitTimesheetService(
 		repository.InitBambooApi(),
-		timesheetUploader.InitTimesheetParser(),
+		timesheetUploader.InitTimesheetParser(repository.InitS3RepositoryImpl(repository.GetS3Client())),
 	)
 
 	timesheetService.UploadCurrentTimesheet()

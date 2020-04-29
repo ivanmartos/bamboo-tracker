@@ -11,7 +11,7 @@ import (
 func Handler(_ context.Context) {
 	timesheetService := timesheetUploader.InitTimesheetService(
 		repository.InitBambooApi(),
-		timesheetUploader.InitTimesheetParser(),
+		timesheetUploader.InitTimesheetParser(repository.InitS3RepositoryImpl(repository.GetS3Client())),
 	)
 
 	timesheetService.UploadCurrentTimesheet()
