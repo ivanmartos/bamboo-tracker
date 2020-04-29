@@ -38,7 +38,7 @@ functions:
   uploadTimesheet:
     handler: bin/timesheetUploader
     events:
-      - schedule: cron(0 17 ? * MON-FRI *)
+      - schedule: cron(0 15 ? * MON-FRI *)
     environment:
       BAMBOO_HOST: ${env:BAMBOO_HOST}
       BAMBOO_USERNAME: ${env:BAMBOO_USERNAME}
