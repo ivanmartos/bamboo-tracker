@@ -4,6 +4,9 @@ plugins:
   - serverless-offline
   - serverless-deployment-bucket
 
+custom:
+  timesheetS3Key: timesheet.yml
+
 provider:
   name: aws
   runtime: go1.x
@@ -15,6 +18,15 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
   logRetentionInDays: 7
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 's3:GetObject'
+      Resource:
+        Fn::Join:
+          - '/'
+          - - !GetAtt ['TimesheetsBucket', Arn]
+            - ${self:custom.timesheetS3Key}
 
 package:
   exclude:
