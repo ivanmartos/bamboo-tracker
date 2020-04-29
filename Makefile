@@ -1,4 +1,4 @@
-.PHONY: install build clean deploy test updateTimesheet
+.PHONY: install build clean deploy test uploadTimesheet
 
 export STAGE=dev
 export PROFILE=default
@@ -22,3 +22,6 @@ offline: clean build
 
 test:
 	go test ./internal/**
+
+uploadTimesheet:
+	aws s3 cp ./timesheet.yml s3://bamboo-tracker-timesheets-$(STAGE)/ --profile $(PROFILE)
