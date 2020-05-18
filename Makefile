@@ -10,6 +10,7 @@ install:
 build:
 	export GO111MODULE=on
 	env GOOS=linux go build -ldflags="-s -w" -o bin/timesheetUploader ./cmd/timesheetUploader/main.go
+	env GOOS=linux go build -ldflags="-s -w" -o bin/timeTrackingChecker ./cmd/timeTrackingChecker/main.go
 
 clean:
 	rm -rf ./bin ./vendor Gopkg.lock
