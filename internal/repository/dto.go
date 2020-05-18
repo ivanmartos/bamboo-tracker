@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/ivanmartos/bamboo-tracker/internal/timesheetUploader"
+	"github.com/ivanmartos/bamboo-tracker/internal/model"
 	"strconv"
 )
 
@@ -18,7 +18,7 @@ type timesheetDto struct {
 	Entries []timesheetEntryDto `json:"entries"`
 }
 
-func mapToDto(entries []timesheetUploader.TimesheetEntry, session timesheetUploader.BambooSession) timesheetDto {
+func mapToDto(entries []model.TimesheetEntry, session model.BambooSession) timesheetDto {
 	timesheetDto := timesheetDto{}
 
 	employeeId, _ := strconv.Atoi(session.EmployeeId)

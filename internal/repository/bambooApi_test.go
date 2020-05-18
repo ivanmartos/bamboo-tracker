@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ivanmartos/bamboo-tracker/internal/mocks"
-	"github.com/ivanmartos/bamboo-tracker/internal/timesheetUploader"
+	"github.com/ivanmartos/bamboo-tracker/internal/model"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -34,17 +34,17 @@ const bambooHostEnvVar = "www.bamboo.com"
 func TestBambooApiImpl_AddTimesheetRecord(t *testing.T) {
 	_ = os.Setenv("BAMBOO_HOST", bambooHostEnvVar)
 
-	session := timesheetUploader.BambooSession{
+	session := model.BambooSession{
 		EmployeeId: "123",
 		Id:         "321",
 	}
 
-	timesheetEntry := timesheetUploader.TimesheetEntry{
+	timesheetEntry := model.TimesheetEntry{
 		Date:  "2020-04-15",
 		Start: "09:00",
 		End:   "10:00",
 	}
-	timesheets := []timesheetUploader.TimesheetEntry{timesheetEntry}
+	timesheets := []model.TimesheetEntry{timesheetEntry}
 
 	var request *http.Request
 	mockClient := &mocks.MockClient{}

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
-	"fmt"
+	"github.com/ivanmartos/bamboo-tracker/internal/model"
 	"github.com/ivanmartos/bamboo-tracker/internal/timesheetUploader"
 	"io"
 	"io/ioutil"
@@ -45,10 +45,10 @@ func parseCsrfToken(body string) string {
 	return r.FindStringSubmatch(body)[1]
 }
 
-func parseSession(body string) timesheetUploader.BambooSession {
+func parseSession(body string) model.BambooSession {
 	r, _ := regexp.Compile(`var SESSION_USER=([^;]+);`)
 
-	var session timesheetUploader.BambooSession
+	var session model.BambooSession
 	sessionUserJsonStr := r.FindStringSubmatch(body)[1]
 
 	_ = json.Unmarshal([]byte(sessionUserJsonStr), &session)
@@ -96,7 +96,7 @@ func (api *BambooApiImpl) setInitialCsrfToken() {
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("Initial response status", resp.Status)
+	log.Println("Initial response status", resp.Status)
 
 	if resp.StatusCode != http.StatusOK {
 		panic("Initial did not return 200. Returned - " + resp.Status)
@@ -107,7 +107,7 @@ func (api *BambooApiImpl) setInitialCsrfToken() {
 	api.updateCsrfToken(body)
 }
 
-func (api *BambooApiImpl) LogIn(username string, password string) timesheetUploader.BambooSession {
+func (api *BambooApiImpl) LogIn(username string, password string) model.BambooSession {
 	api.setInitialCsrfToken()
 
 	u, _ := url.Parse(os.Getenv("BAMBOO_HOST") + "/login.php")
@@ -129,7 +129,7 @@ func (api *BambooApiImpl) LogIn(username string, password string) timesheetUploa
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("Log in response status", resp.Status)
+	log.Println("Log in response status", resp.Status)
 	if resp.StatusCode != http.StatusOK {
 		panic("LogIn api method did not return 200. Returned - " + resp.Status)
 	}
