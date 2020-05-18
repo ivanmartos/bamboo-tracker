@@ -1,6 +1,7 @@
 package timesheetUploader
 
 import (
+	"github.com/ivanmartos/bamboo-tracker/internal/model"
 	"gopkg.in/yaml.v2"
 	"log"
 	"strings"
@@ -39,7 +40,7 @@ func (p TimesheetParserImpl) getTimesheetContent() string {
 	return p.s3Repository.GetS3FileContent(getEnvVariable("TIMESHEET_S3_KEY"), getEnvVariable("TIMESHEET_S3_BUCKET"))
 }
 
-func (p TimesheetParserImpl) GetTimesheetEntries(weekday time.Weekday) []TimesheetEntry {
+func (p TimesheetParserImpl) GetTimesheetEntries(weekday time.Weekday) []model.TimesheetEntry {
 	var config = make(map[string][]configEntry)
 
 	timesheets := p.getTimesheetContent()
@@ -52,12 +53,12 @@ func (p TimesheetParserImpl) GetTimesheetEntries(weekday time.Weekday) []Timeshe
 
 	currentConfigEntries := config[strings.ToLower(weekday.String())]
 
-	var entries []TimesheetEntry
+	var entries []model.TimesheetEntry
 
 	dateStr := time.Now().Format(timesheetEntryDateLayout)
 
 	for _, entryConfig := range currentConfigEntries {
-		entry := &TimesheetEntry{
+		entry := &model.TimesheetEntry{
 			Date:  dateStr,
 			Start: getValidatedConfigTime(entryConfig.Start),
 			End:   getValidatedConfigTime(entryConfig.End),

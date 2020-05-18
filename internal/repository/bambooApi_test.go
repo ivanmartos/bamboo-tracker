@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ivanmartos/bamboo-tracker/internal/mocks"
-	"github.com/ivanmartos/bamboo-tracker/internal/timesheetUploader"
+	"github.com/ivanmartos/bamboo-tracker/internal/model"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -34,17 +34,17 @@ const bambooHostEnvVar = "www.bamboo.com"
 func TestBambooApiImpl_AddTimesheetRecord(t *testing.T) {
 	_ = os.Setenv("BAMBOO_HOST", bambooHostEnvVar)
 
-	session := timesheetUploader.BambooSession{
+	session := model.BambooSession{
 		EmployeeId: "123",
 		Id:         "321",
 	}
 
-	timesheetEntry := timesheetUploader.TimesheetEntry{
+	timesheetEntry := model.TimesheetEntry{
 		Date:  "2020-04-15",
 		Start: "09:00",
 		End:   "10:00",
 	}
-	timesheets := []timesheetUploader.TimesheetEntry{timesheetEntry}
+	timesheets := []model.TimesheetEntry{timesheetEntry}
 
 	var request *http.Request
 	mockClient := &mocks.MockClient{}
@@ -265,5 +265,50 @@ func Test_setHeaders(t *testing.T) {
 				t.Errorf("Expected %v, got %v", tt.want, headerValue)
 			}
 		})
+	}
+}
+
+func TestBambooApiImpl_GetHomeContent(t *testing.T) {
+	_ = os.Setenv("BAMBOO_HOST", bambooHostEnvVar)
+
+	expectedCsfrToken := "fooobar"
+	expectedDailyTimeTracking := 10.5
+	expectedWeeklyTimeTracking := 20.0
+
+	homeResponseHtmlSnippet := fmt.Sprintf(`
+<script type="text/javascript">
+	var CSRF_TOKEN = "%s";
+	window.time_tracking = {"dailyTotal":%f,"weeklyTotal":%f};
+</script>
+`, expectedCsfrToken, expectedDailyTimeTracking, expectedWeeklyTimeTracking)
+
+	var request *http.Request
+	mockClient := &mocks.MockClient{}
+	mockClient.DoFunc = func(req *http.Request) (response *http.Response, err error) {
+		request = req
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       ioutil.NopCloser(strings.NewReader(homeResponseHtmlSnippet)),
+		}, nil
+
+	}
+	bambooApi := BambooApiImpl{Client: mockClient}
+
+	timeTracking := bambooApi.GetHomeContent()
+
+	if request.Method != http.MethodGet {
+		t.Errorf("Request has wrong method. Received %v", request.Method)
+	}
+
+	if request.URL.String() != bambooHostEnvVar+"/home" {
+		t.Errorf("Request has wrong URL. Received %v", request.URL.String())
+	}
+
+	if timeTracking.WeeklyTotal != expectedWeeklyTimeTracking {
+		t.Errorf("Received weekly total with wrong value. Received %v", timeTracking.WeeklyTotal)
+	}
+
+	if timeTracking.DailyTotal != expectedDailyTimeTracking {
+		t.Errorf("Received daily total with wrong value. Received %v", timeTracking.DailyTotal)
 	}
 }

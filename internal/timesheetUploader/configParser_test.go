@@ -2,6 +2,7 @@ package timesheetUploader
 
 import (
 	"github.com/ivanmartos/bamboo-tracker/internal/mocks"
+	"github.com/ivanmartos/bamboo-tracker/internal/model"
 	"os"
 	"reflect"
 	"testing"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestGetTimesheetEntries(t *testing.T) {
-	verifyTimesheetEntry := func(t *testing.T, parser TimesheetParser, weekday time.Weekday, expectedEntries []TimesheetEntry) {
+	verifyTimesheetEntry := func(t *testing.T, parser TimesheetParser, weekday time.Weekday, expectedEntries []model.TimesheetEntry) {
 		result := parser.GetTimesheetEntries(weekday)
 
 		if len(expectedEntries) == 0 {
@@ -58,13 +59,13 @@ Sunday:
 
 	currentDate := time.Now().Format(timesheetEntryDateLayout)
 
-	verifyTimesheetEntry(t, parser, time.Monday, []TimesheetEntry{{currentDate, "11:00", "12:00"}})
+	verifyTimesheetEntry(t, parser, time.Monday, []model.TimesheetEntry{{currentDate, "11:00", "12:00"}})
 	verifyS3Call(t, *mockS3Repo, s3Key, s3Bucket)
-	verifyTimesheetEntry(t, parser, time.Saturday, []TimesheetEntry{{currentDate, "11:10", "12:10"}, {currentDate, "13:10", "14:10"}})
+	verifyTimesheetEntry(t, parser, time.Saturday, []model.TimesheetEntry{{currentDate, "11:10", "12:10"}, {currentDate, "13:10", "14:10"}})
 	verifyS3Call(t, *mockS3Repo, s3Key, s3Bucket)
 	// Sunday is not written in correct format
-	verifyTimesheetEntry(t, parser, time.Sunday, []TimesheetEntry{})
+	verifyTimesheetEntry(t, parser, time.Sunday, []model.TimesheetEntry{})
 	verifyS3Call(t, *mockS3Repo, s3Key, s3Bucket)
-	verifyTimesheetEntry(t, parser, time.Tuesday, []TimesheetEntry{})
+	verifyTimesheetEntry(t, parser, time.Tuesday, []model.TimesheetEntry{})
 	verifyS3Call(t, *mockS3Repo, s3Key, s3Bucket)
 }

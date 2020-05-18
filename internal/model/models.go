@@ -1,4 +1,4 @@
-package timesheetUploader
+package model
 
 type BambooSession struct {
 	EmployeeId string
@@ -9,4 +9,9 @@ type TimesheetEntry struct {
 	Date  string
 	Start string
 	End   string
+}
+
+type TimeTracking struct {
+	DailyTotal  float64
+	WeeklyTotal float64
 }
