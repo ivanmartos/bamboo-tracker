@@ -18,3 +18,7 @@ type TimesheetParser interface {
 type S3Repository interface {
 	GetS3FileContent(key string, bucket string) string
 }
+
+type SesRepository interface {
+	SendEmail(sender string, recipient string, htmlBody string, subject string)
+}
