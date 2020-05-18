@@ -267,3 +267,48 @@ func Test_setHeaders(t *testing.T) {
 		})
 	}
 }
+
+func TestBambooApiImpl_GetHomeContent(t *testing.T) {
+	_ = os.Setenv("BAMBOO_HOST", bambooHostEnvVar)
+
+	expectedCsfrToken := "fooobar"
+	expectedDailyTimeTracking := 10.5
+	expectedWeeklyTimeTracking := 20.0
+
+	homeResponseHtmlSnippet := fmt.Sprintf(`
+<script type="text/javascript">
+	var CSRF_TOKEN = "%s";
+	window.time_tracking = {"dailyTotal":%f,"weeklyTotal":%f};
+</script>
+`, expectedCsfrToken, expectedDailyTimeTracking, expectedWeeklyTimeTracking)
+
+	var request *http.Request
+	mockClient := &mocks.MockClient{}
+	mockClient.DoFunc = func(req *http.Request) (response *http.Response, err error) {
+		request = req
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       ioutil.NopCloser(strings.NewReader(homeResponseHtmlSnippet)),
+		}, nil
+
+	}
+	bambooApi := BambooApiImpl{Client: mockClient}
+
+	timeTracking := bambooApi.GetHomeContent()
+
+	if request.Method != http.MethodGet {
+		t.Errorf("Request has wrong method. Received %v", request.Method)
+	}
+
+	if request.URL.String() != bambooHostEnvVar+"/home" {
+		t.Errorf("Request has wrong URL. Received %v", request.URL.String())
+	}
+
+	if timeTracking.WeeklyTotal != expectedWeeklyTimeTracking {
+		t.Errorf("Received weekly total with wrong value. Received %v", timeTracking.WeeklyTotal)
+	}
+
+	if timeTracking.DailyTotal != expectedDailyTimeTracking {
+		t.Errorf("Received daily total with wrong value. Received %v", timeTracking.DailyTotal)
+	}
+}

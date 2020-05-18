@@ -12,6 +12,8 @@ type MockBambooApi struct {
 	AddTimesheetRecordCalled       bool
 	AddTimesheetRecordSessionParam *model.BambooSession
 	AddTimesheetRecordEntriesParam []model.TimesheetEntry
+	GetHomeContentCalled           bool
+	GetHomeContentFunc             func() model.TimeTracking
 }
 
 func (m *MockBambooApi) LogIn(username string, password string) model.BambooSession {
@@ -28,8 +30,8 @@ func (m *MockBambooApi) AddTimesheetRecord(session model.BambooSession, entries 
 }
 
 func (m *MockBambooApi) GetHomeContent() model.TimeTracking {
-	//TODO
-	return model.TimeTracking{}
+	m.GetHomeContentCalled = true
+	return m.GetHomeContentFunc()
 }
 
 func (m *MockBambooApi) Reset() {
@@ -39,4 +41,6 @@ func (m *MockBambooApi) Reset() {
 	m.LogInCalled = false
 	m.LogInPasswordParam = nil
 	m.LogInUsernameParam = nil
+	m.GetHomeContentCalled = false
+	m.GetHomeContentFunc = nil
 }

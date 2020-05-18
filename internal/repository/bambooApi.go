@@ -56,6 +56,17 @@ func parseSession(body string) model.BambooSession {
 	return session
 }
 
+func parseTimeTracking(body string) model.TimeTracking {
+	r, _ := regexp.Compile(`window\.time_tracking = ([^;]+);`)
+
+	var timeTracking model.TimeTracking
+	timeTrackingJsonStr := r.FindStringSubmatch(body)[1]
+
+	_ = json.Unmarshal([]byte(timeTrackingJsonStr), &timeTracking)
+
+	return timeTracking
+}
+
 func getResponseBody(resp http.Response) string {
 	var reader io.ReadCloser
 	switch resp.Header.Get("Content-Encoding") {
@@ -141,7 +152,35 @@ func (api *BambooApiImpl) LogIn(username string, password string) model.BambooSe
 	return parseSession(body)
 }
 
-func (api *BambooApiImpl) AddTimesheetRecord(session timesheetUploader.BambooSession, entries []timesheetUploader.TimesheetEntry) {
+/**
+Should be called after logging in
+*/
+func (api *BambooApiImpl) GetHomeContent() model.TimeTracking {
+	u, _ := url.Parse(os.Getenv("BAMBOO_HOST") + "/home")
+
+	req, _ := http.NewRequest(http.MethodGet, u.String(), nil)
+
+	setHeaders(*req)
+
+	resp, err := api.Client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	log.Println("Home response status", resp.Status)
+	if resp.StatusCode != http.StatusOK {
+		panic("Home api method did not return 200. Returned - " + resp.Status)
+	}
+
+	body := getResponseBody(*resp)
+
+	api.updateCsrfToken(body)
+
+	return parseTimeTracking(body)
+}
+
+func (api *BambooApiImpl) AddTimesheetRecord(session model.BambooSession, entries []model.TimesheetEntry) {
 	dto := mapToDto(entries, session)
 	dtoJson, _ := json.Marshal(dto)
 
