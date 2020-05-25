@@ -1,0 +1,5 @@
+Bucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    BucketName: ${self:service}-timesheets-${self:provider.stage}
+    AccessControl: Private

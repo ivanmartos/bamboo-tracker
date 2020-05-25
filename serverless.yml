@@ -64,8 +64,4 @@ functions:
 
 resources:
   Resources:
-    TimesheetsBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:service}-timesheets-${self:provider.stage}
-        AccessControl: Private
+    TimesheetsBucket: ${file(./resources/S3/TimesheetsBucket.yml):Bucket}
