@@ -66,3 +66,10 @@ functions:
 resources:
   Resources:
     TimesheetsBucket: ${file(./resources/S3/TimesheetsBucket.yml):Bucket}
+    StateMachineExecutionRole: ${file(./resources/IAM/StateMachineExecutionRole.yml):Role}
+    EventBridgeExecutionRole: ${file(./resources/IAM/EventBridgeExecutionRole.yml):Role}
+    UploadTimesheetStateMachine: ${file(./resources/StepFunctions/UploadTimesheetStateMachine.yml):StateMachine}
+    UploadTimesheetFailedStateRule: ${file(./resources/Events/UploadTimesheetFailedStateRule.yml):Rule}
+    UploadTimesheetRule: ${file(./resources/Events/UploadTimesheetRule.yml):Rule}
+    MonitoringTopic: ${file(./resources/SNS/MonitoringTopic.yml):Topic}
+    MonitoringTopicPolicy: ${file(./resources/SNS/MonitoringTopicPolicy.yml):TopicPolicy}
