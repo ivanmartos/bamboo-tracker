@@ -1,0 +1,7 @@
+Topic:
+  Type: AWS::SNS::Topic
+  Properties:
+    TopicName: ${self:service}-monitoring-${self:provider.stage}
+    Subscription:
+      - Endpoint: ${env:DAILY_TIME_TRACKING_RECIPIENT_EMAIL}
+        Protocol: email
