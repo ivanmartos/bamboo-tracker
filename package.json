@@ -21,6 +21,7 @@
   "devDependencies": {
     "serverless": "^1.67.1",
     "serverless-deployment-bucket": "^1.1.2",
-    "serverless-offline": "^6.1.4"
+    "serverless-offline": "^6.1.4",
+    "serverless-pseudo-parameters": "^2.5.0"
   }
 }
