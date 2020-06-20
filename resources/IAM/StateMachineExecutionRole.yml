@@ -1,0 +1,31 @@
+Role:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        -
+          Effect: Allow
+          Principal:
+            Service:
+              - states.${self:provider.region}.amazonaws.com
+          Action:
+            - 'sts:AssumeRole'
+    Path: '/service-role/'
+    Description: Execution role of state machine for ${self:service}
+    RoleName: ${self:service}-StateMachineExecutionRole-${self:provider.stage}
+    Policies:
+      -
+        PolicyName: StateMachineExecutionRolePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            -
+              Effect: Allow
+              Action: 'lambda:InvokeFunction'
+              Resource:
+                - 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_getTodaysTimesheet'
+                - 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_uploadTimesheet'
+                - 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_retrieveCurrentTimeTracking'
+                - 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_prepareTimeTrackingEmailPayload'
+                - 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_sendNotificationEmail'
