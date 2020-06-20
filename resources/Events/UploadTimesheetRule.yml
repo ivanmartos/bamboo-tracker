@@ -1,0 +1,12 @@
+Rule:
+  Type: AWS::Events::Rule
+  Properties:
+    Description: Rule to periodically trigger execution of UploadTimesheetStateMachine
+    Name: ${self:service}-triggerTimehseetUpload-${self:provider.stage}
+    ScheduleExpression: cron(0 16 ? * MON-FRI *)
+    State: ENABLED
+    Targets:
+      - Arn: !Ref 'UploadTimesheetStateMachine'
+        Id: UploadTimesheetStateMachine-${self:provider.stage}
+        RoleArn: { 'Fn::GetAtt': ['EventBridgeExecutionRole', 'Arn'] }
+
