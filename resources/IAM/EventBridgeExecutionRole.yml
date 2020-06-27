@@ -1,0 +1,26 @@
+Role:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        -
+          Effect: Allow
+          Principal:
+            Service:
+              - events.amazonaws.com
+          Action:
+            - 'sts:AssumeRole'
+    Path: '/service-role/'
+    Description: Execution role of event bridge of ${self:service} for starging step function
+    RoleName: ${self:service}-EventsExeuctionRole-${self:provider.stage}
+    Policies:
+      -
+        PolicyName: ${self:service}-StateMachineStartExecutionRolePolicy-${self:provider.stage}
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            -
+              Effect: Allow
+              Action: 'states:StartExecution'
+              Resource: !Ref 'UploadTimesheetStateMachine'

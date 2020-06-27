@@ -1,0 +1,20 @@
+Rule:
+  Type: AWS::Events::Rule
+  Properties:
+    Description: Rule to check failed executions of UploadTimesheetStateMachine
+    Name: ${self:service}-failedStatesRule-${self:provider.stage}
+    EventPattern:
+      source:
+        - 'aws.states'
+      detail-type:
+        - 'Step Functions Execution Status Change'
+      detail:
+        status:
+          - 'FAILED'
+          - 'TIMED_OUT'
+          - 'ABORTED'
+    State: ENABLED
+    Targets:
+      - Arn: !Ref 'MonitoringTopic'
+        Id: MonitoringTopic
+

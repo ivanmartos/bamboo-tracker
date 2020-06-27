@@ -15,3 +15,10 @@ type TimeTracking struct {
 	DailyTotal  float64
 	WeeklyTotal float64
 }
+
+type TimeTrackingEmailPayload struct {
+	Sender    string
+	Recipient string
+	HtmlBody  string
+	Subject   string
+}

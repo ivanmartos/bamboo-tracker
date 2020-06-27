@@ -1,0 +1,7 @@
+StateMachine:
+  Type: AWS::StepFunctions::StateMachine
+  Properties:
+    StateMachineName: ${self:service}-UploadTimesheet-${self:provider.stage}
+    DefinitionString: ${file(./resources/StepFunctions/stateMachine.js):uploadTimesheetStateMachine}
+
+    RoleArn: { 'Fn::GetAtt': ['StateMachineExecutionRole', 'Arn'] }

@@ -3,6 +3,7 @@ service: bamboo-tracker
 plugins:
   - serverless-offline
   - serverless-deployment-bucket
+  - serverless-pseudo-parameters
 
 custom:
   timesheetS3Key: timesheet.yml
@@ -40,28 +41,39 @@ package:
     - ./bin/**
 
 functions:
-  uploadTimesheet:
-    handler: bin/timesheetUploader
-    events:
-      - schedule: cron(0 15 ? * MON-FRI *)
+  step_getTodaysTimesheet:
+    handler: bin/lambda/getTodaysTimesheet
     environment:
-      BAMBOO_HOST: ${env:BAMBOO_HOST}
-      BAMBOO_USERNAME: ${env:BAMBOO_USERNAME}
-      BAMBOO_PASSWORD: ${env:BAMBOO_PASSWORD}
       TIMESHEET_S3_KEY: ${self:custom.timesheetS3Key}
       TIMESHEET_S3_BUCKET: !Ref 'TimesheetsBucket'
-
-  checkTimeTracking:
-    handler: bin/timeTrackingChecker
-    events:
-      - schedule: cron(0 16 ? * MON-FRI *)
+  step_uploadTimesheet:
+    handler: bin/lambda/uploadTimesheet
     environment:
       BAMBOO_HOST: ${env:BAMBOO_HOST}
       BAMBOO_USERNAME: ${env:BAMBOO_USERNAME}
       BAMBOO_PASSWORD: ${env:BAMBOO_PASSWORD}
+  step_retrieveCurrentTimeTracking:
+    handler: bin/lambda/retrieveCurrentTimeTracking
+    environment:
+      BAMBOO_HOST: ${env:BAMBOO_HOST}
+      BAMBOO_USERNAME: ${env:BAMBOO_USERNAME}
+      BAMBOO_PASSWORD: ${env:BAMBOO_PASSWORD}
+  step_prepareTimeTrackingEmailPayload:
+    handler: bin/lambda/prepareTimeTrackingEmailPayload
+    environment:
       DAILY_TIME_TRACKING_SENDER_EMAIL: ${env:DAILY_TIME_TRACKING_SENDER_EMAIL}
       DAILY_TIME_TRACKING_RECIPIENT_EMAIL: ${env:DAILY_TIME_TRACKING_RECIPIENT_EMAIL}
+  step_sendNotificationEmail:
+    handler: bin/lambda/sendNotificationEmail
+
 
 resources:
   Resources:
     TimesheetsBucket: ${file(./resources/S3/TimesheetsBucket.yml):Bucket}
+    StateMachineExecutionRole: ${file(./resources/IAM/StateMachineExecutionRole.yml):Role}
+    EventBridgeExecutionRole: ${file(./resources/IAM/EventBridgeExecutionRole.yml):Role}
+    UploadTimesheetStateMachine: ${file(./resources/StepFunctions/UploadTimesheetStateMachine.yml):StateMachine}
+    UploadTimesheetFailedStateRule: ${file(./resources/Events/UploadTimesheetFailedStateRule.yml):Rule}
+    UploadTimesheetRule: ${file(./resources/Events/UploadTimesheetRule.yml):Rule}
+    MonitoringTopic: ${file(./resources/SNS/MonitoringTopic.yml):Topic}
+    MonitoringTopicPolicy: ${file(./resources/SNS/MonitoringTopicPolicy.yml):TopicPolicy}

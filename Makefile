@@ -1,4 +1,5 @@
 .PHONY: install build clean deploy test uploadTimesheet
+LAMBDAS_DIR = ./lambda
 
 export STAGE=dev
 export PROFILE=default
@@ -9,8 +10,7 @@ install:
 
 build:
 	export GO111MODULE=on
-	env GOOS=linux go build -ldflags="-s -w" -o bin/timesheetUploader ./cmd/timesheetUploader/main.go
-	env GOOS=linux go build -ldflags="-s -w" -o bin/timeTrackingChecker ./cmd/timeTrackingChecker/main.go
+	@for f in $(shell ls ${LAMBDAS_DIR}); do env GOOS=linux go build -ldflags="-s -w" -o bin/lambda/$$f ./lambda/$$f/main.go; done
 
 clean:
 	rm -rf ./bin ./vendor Gopkg.lock

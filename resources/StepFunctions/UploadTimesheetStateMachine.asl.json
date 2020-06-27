@@ -1,0 +1,115 @@
+{
+  "StartAt": "GetTodaysTimesheetEntries",
+  "States": {
+    "GetTodaysTimesheetEntries": {
+      "Type": "Task",
+      "Comment": "Retrieve timesheet entries for today",
+      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_getTodaysTimesheet",
+      "ResultPath": "$.timesheetEntries",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "ChoiceShouldUploadTimesheet"
+    },
+    "ChoiceShouldUploadTimesheet": {
+      "Type": "Choice",
+      "Comment": "Choice for deciding whether timesheet should be uploaded",
+      "Choices": [
+        {
+          "Variable": "$.timesheetEntries.isEmpty",
+          "BooleanEquals": true,
+          "Next": "RetrieveCurrentTimeTracking"
+        }
+      ],
+      "Default": "UploadTimesheet"
+    },
+    "UploadTimesheet": {
+      "Type": "Task",
+      "Comment": "Upload current timesheet to BambooHR",
+      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_uploadTimesheet",
+      "InputPath": "$.timesheetEntries.timesheetEntries",
+      "Next": "WaitForBambooToProcessTimesheetUpload",
+      "ResultPath": null,
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ]
+    },
+    "WaitForBambooToProcessTimesheetUpload": {
+      "Type": "Wait",
+      "Comment": "Wait for BambooHR to process uploaded timesheet",
+      "Seconds": 10,
+      "Next": "RetrieveCurrentTimeTracking"
+    },
+    "RetrieveCurrentTimeTracking": {
+      "Type": "Task",
+      "Comment": "Retrieve current time tracking from BambooHR",
+      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_retrieveCurrentTimeTracking",
+      "ResultPath": "$.timeTracking",
+      "Next": "PrepareTimeTrackingEmailPayload",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ]
+    },
+    "PrepareTimeTrackingEmailPayload": {
+      "Type": "Task",
+      "Comment": "Prepare content of time tracking email",
+      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_prepareTimeTrackingEmailPayload",
+      "ResultPath": "$.emailPayload",
+      "InputPath": "$.timeTracking",
+      "Next": "SendNotificationEmail",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ]
+    },
+    "SendNotificationEmail": {
+      "Type": "Task",
+      "Comment": "Send notification email about timesheet upload",
+      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_sendNotificationEmail",
+      "ResultPath": "$.sendNotificationEmailResult",
+      "InputPath": "$.emailPayload",
+      "Next": "Finish",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ]
+    },
+    "Finish": {
+      "Type": "Pass",
+      "End": true
+    }
+  }
+}
