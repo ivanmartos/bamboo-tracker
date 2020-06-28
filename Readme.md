@@ -9,10 +9,9 @@ Project is implemented using [GoLang](https://golang.org/) programming language 
 
 ## Content
 Current project creates CloudFormation stack that contains 
-- lambda for uploading timesheet entries
-- lambda for notifying about current timesheet values
+- AWS StepFunction that orchestrates lambda steps for uploading timesheet and notifying about emails
 - s3 bucket for storing timesheets
-- CloudWatch event for triggering lambda
+- EventBridge for triggering StepFunction
 
 Project also contains definition of terraform stack
 - verification of SES email identity (it's not part of CloudFormation stack since this is not supported by CloudFormation).
@@ -57,10 +56,6 @@ Environment variables needed before deployment
 3. `BAMBOO_PASSWORD` - your password used for logging in to BambooHR
 4. `DAILY_TIME_TRACKING_SENDER_EMAIL` - email address to send time tracking notifications from
 %. `DAILY_TIME_TRACKING_RECIPIENT_EMAIL` - email address to receive time tracking notifications from
-
-Other defaults (can be overriden in [serverless.yml](serverless.yml))
-- lambda will be executed every working day at 5pm UTC
-- CloudFormation stack will be deployed to `eu-west-1` region
 
 ```
 make deploy STAGE=YOUR_STAGE //STAGE is optional, be default it is "dev"
