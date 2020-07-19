@@ -19,9 +19,9 @@
   },
   "homepage": "https://github.com/ivanmartos/bamboo-tracker#readme",
   "devDependencies": {
-    "serverless": "^1.67.1",
+    "serverless": "^1.75.1",
     "serverless-deployment-bucket": "^1.1.2",
-    "serverless-offline": "^6.1.4",
+    "serverless-offline": "^6.5.0",
     "serverless-pseudo-parameters": "^2.5.0"
   }
 }
