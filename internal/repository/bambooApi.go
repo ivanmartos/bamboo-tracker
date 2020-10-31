@@ -37,11 +37,11 @@ func InitBambooApi() timesheetUploader.BambooApi {
 	}
 }
 
-const userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
+const userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"
 const acceptEncoding = "gzip, deflate, br"
 
 func parseCsrfToken(body string) string {
-	r, _ := regexp.Compile(`var CSRF_TOKEN = "([^"]+)";`)
+	r, _ := regexp.Compile(`var CSRF_TOKEN = "([^"]*)";`)
 	return r.FindStringSubmatch(body)[1]
 }
 
@@ -86,9 +86,12 @@ func getResponseBody(resp http.Response) string {
 }
 
 func setHeaders(r http.Request) {
+	r.Header.Add("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
 	r.Header.Add("accept-encoding", acceptEncoding)
+	r.Header.Add("accept-language", "en-GB,en-US;q=0.9,en;q=0.8")
 	r.Header.Add("upgrade-insecure-requests", "1")
 	r.Header.Add("user-agent", userAgent)
+	r.Header.Add("origin", os.Getenv("BAMBOO_HOST"))
 }
 
 func (api *BambooApiImpl) updateCsrfToken(body string) {
@@ -128,6 +131,12 @@ func (api *BambooApiImpl) LogIn(username string, password string) model.BambooSe
 	data.Set("username", username)
 	data.Set("password", password)
 	data.Set("CSRFToken", api.csrfToken)
+	data.Set("r", "/home/")
+
+	// Query params
+	params := url.Values{}
+	params.Add("r", "/home/")
+	u.RawQuery = params.Encode()
 
 	req, _ := http.NewRequest(http.MethodPost, u.String(), strings.NewReader(data.Encode()))
 

@@ -153,8 +153,8 @@ func TestBambooApiImpl_LogIn(t *testing.T) {
 		t.Errorf("Init session has wrong method. Received %v", sessionInitRequest.Method)
 	}
 
-	if logInRequest.URL.String() != bambooHostEnvVar+"/login.php" {
-		t.Errorf("Log in has wrong URL. Received %v", sessionInitRequest.URL.String())
+	if logInRequest.URL.String() != bambooHostEnvVar+"/login.php?r=%2Fhome%2F" {
+		t.Errorf("Log in has wrong URL. Received %v", logInRequest.URL.String())
 	}
 
 	if logInRequest.Method != http.MethodPost {
