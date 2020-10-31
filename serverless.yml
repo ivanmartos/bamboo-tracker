@@ -1,8 +1,6 @@
 service: bamboo-tracker
 
 plugins:
-  - serverless-offline
-  - serverless-deployment-bucket
   - serverless-pseudo-parameters
 
 custom:
