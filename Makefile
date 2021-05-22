@@ -6,7 +6,7 @@ export PROFILE=default
 
 install:
 	go get ./...
-	npm install
+	npm ci
 
 build:
 	export GO111MODULE=on
@@ -16,10 +16,7 @@ clean:
 	rm -rf ./bin ./vendor Gopkg.lock
 
 deploy: clean build
-	serverless deploy --verbose -s $(STAGE) --aws-profile $(PROFILE)
-
-offline: clean build
-	serverless offline --useDocker -s local
+	npx serverless deploy --verbose -s $(STAGE) --aws-profile $(PROFILE)
 
 test:
 	go test ./internal/**
