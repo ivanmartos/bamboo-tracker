@@ -67,10 +67,6 @@ make uploadTimesheet
 ```
 
 ### How to run locally
-To start as local serverless project execute
-```
-make offline
-```
 
 To just execute timesheetUploader functionality without serverless framework start program [locally](cmd/timesheetUploaderLocal)
 
