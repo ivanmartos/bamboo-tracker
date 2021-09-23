@@ -4,7 +4,7 @@
     "GetTodaysTimesheetEntries": {
       "Type": "Task",
       "Comment": "Retrieve timesheet entries for today",
-      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_getTodaysTimesheet",
+      "Resource": "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_getTodaysTimesheet",
       "ResultPath": "$.timesheetEntries",
       "Retry": [
         {
@@ -33,7 +33,7 @@
     "UploadTimesheet": {
       "Type": "Task",
       "Comment": "Upload current timesheet to BambooHR",
-      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_uploadTimesheet",
+      "Resource": "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_uploadTimesheet",
       "InputPath": "$.timesheetEntries.timesheetEntries",
       "Next": "WaitForBambooToProcessTimesheetUpload",
       "ResultPath": null,
@@ -57,7 +57,7 @@
     "RetrieveCurrentTimeTracking": {
       "Type": "Task",
       "Comment": "Retrieve current time tracking from BambooHR",
-      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_retrieveCurrentTimeTracking",
+      "Resource": "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_retrieveCurrentTimeTracking",
       "ResultPath": "$.timeTracking",
       "Next": "PrepareTimeTrackingEmailPayload",
       "Retry": [
@@ -74,7 +74,7 @@
     "PrepareTimeTrackingEmailPayload": {
       "Type": "Task",
       "Comment": "Prepare content of time tracking email",
-      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_prepareTimeTrackingEmailPayload",
+      "Resource": "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_prepareTimeTrackingEmailPayload",
       "ResultPath": "$.emailPayload",
       "InputPath": "$.timeTracking",
       "Next": "SendNotificationEmail",
@@ -92,7 +92,7 @@
     "SendNotificationEmail": {
       "Type": "Task",
       "Comment": "Send notification email about timesheet upload",
-      "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-step_sendNotificationEmail",
+      "Resource": "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_sendNotificationEmail",
       "ResultPath": "$.sendNotificationEmailResult",
       "InputPath": "$.emailPayload",
       "Next": "Finish",

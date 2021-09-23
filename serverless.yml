@@ -1,13 +1,13 @@
 service: bamboo-tracker
 
-plugins:
-  - serverless-pseudo-parameters
+variablesResolutionMode: 20210326
 
 custom:
   timesheetS3Key: timesheet.yml
 
 provider:
   name: aws
+  lambdaHashingVersion: 20201221
   runtime: go1.x
   stackTags:
     ENVIRONMENT: ${self:provider.stage}
