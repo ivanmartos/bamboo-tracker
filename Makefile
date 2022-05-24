@@ -1,8 +1,16 @@
-.PHONY: install build clean deploy test uploadTimesheet
+.PHONY: install build clean deploy test uploadTimesheet package
 LAMBDAS_DIR = ./lambda
 
 export STAGE=dev
 export PROFILE=default
+
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
+prepare-offline-env:
+	cp .env.offline .env
 
 install:
 	go get ./...
@@ -20,6 +28,9 @@ deploy: clean build
 
 test:
 	go test ./internal/**
+
+package: clean build
+	npx serverless package --verbose -s $(STAGE)
 
 uploadTimesheet:
 	aws s3 cp ./timesheet.yml s3://bamboo-tracker-timesheets-$(STAGE)/ --profile $(PROFILE)
