@@ -26,6 +26,8 @@ node_modules
 # Editors
 .idea
 
+# local config foles
+.env
 
 # Ignore actual used timesheet.yml
 timesheet.yml
