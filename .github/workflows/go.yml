@@ -30,15 +30,8 @@ jobs:
     - name: Prepare offline env vars
       run: make prepare-offline-env
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: MOCK
-        aws-secret-access-key: MOCK
-        aws-region: eu-central-1
-
     - name: Prepare offline CF template
-      run: make package STAGE=offline
+      run: AWS_ACCESS_KEY=mock AWS_SECRET_ACCESS_KEY=mock make package STAGE=offline
 
     - name: Setup Cloud Formation Linter with Latest Version
       uses: scottbrenner/cfn-lint-action@v2
