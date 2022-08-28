@@ -31,7 +31,7 @@ jobs:
       run: make prepare-offline-env
 
     - name: Prepare offline CF template
-      run: make packge STAGE=offline
+      run: make package STAGE=offline
 
     - name: Setup Cloud Formation Linter with Latest Version
       uses: scottbrenner/cfn-lint-action@v2
