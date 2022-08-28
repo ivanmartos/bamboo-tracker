@@ -31,7 +31,7 @@ jobs:
       run: make prepare-offline-env
 
     - name: Prepare offline CF template
-      run: AWS_ACCESS_KEY=mock AWS_SECRET_ACCESS_KEY=mock make package STAGE=offline
+      run: AWS_ACCESS_KEY_ID=mock AWS_SECRET_ACCESS_KEY=mock make package STAGE=offline
 
     - name: Setup Cloud Formation Linter with Latest Version
       uses: scottbrenner/cfn-lint-action@v2
