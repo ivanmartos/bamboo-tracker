@@ -24,8 +24,8 @@ Role:
               Effect: Allow
               Action: 'lambda:InvokeFunction'
               Resource:
-                - 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_getTodaysTimesheet'
-                - 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_uploadTimesheet'
-                - 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_retrieveCurrentTimeTracking'
-                - 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_prepareTimeTrackingEmailPayload'
-                - 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_sendNotificationEmail'
+                - 'arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_getTodaysTimesheet'
+                - 'arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_uploadTimesheet'
+                - 'arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_retrieveCurrentTimeTracking'
+                - 'arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_prepareTimeTrackingEmailPayload'
+                - 'arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-step_sendNotificationEmail'
