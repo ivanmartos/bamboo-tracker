@@ -39,12 +39,6 @@ jobs:
     - name: npm install
       run: npm ci
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: ${{ secrets.CI_CHECK_IAM_ROLE_ARN }}
-        aws-region: eu-central-1
-
     - name: Prepare offline CF template
       run: make package STAGE=offline
 
